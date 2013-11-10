@@ -241,7 +241,8 @@ void VWWLCD::u8g_barGraphFromSales(char* title, uint8_t *subSales, uint8_t size)
 
 
 
-  const uint8_t dayWidth = 4;
+  //const uint8_t dayWidth = 4;
+  const uint8_t dayWidth = graphWidth / (float)size;
   const uint8_t dayXSpacing = 1;
     //const uint8_t saleHeight = 2;
 
@@ -297,9 +298,9 @@ void VWWLCD::draw(void) {
   u8g_prepare();
 
   // TODO: Parse incoming text and then pass to method
-  uint8_t subSales[30] = {1, 2, 20 ,50, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-
-  u8g_barGraphFromSales("Sales", subSales, 30);
+  // uint8_t subSales[30] = {1, 2, 20 ,50, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  uint8_t subSales[30] = {1, 2, 20 , 10, 5, 6, 7, 8, 9, 10};
+  u8g_barGraphFromSales("Sales", subSales, 10);
   //
   /*switch(draw_state >> 3) {
     case 0: u8g_box_frame(draw_state&7); break;
