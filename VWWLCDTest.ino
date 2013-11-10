@@ -7,6 +7,8 @@ VWWLCD *u8g;
 
 void setup(void) {
 
+  Serial.begin(9600);
+  
   // flip screen, if required
   //u8g.setRot180();
   u8g = new VWWLCD();

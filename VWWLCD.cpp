@@ -1,9 +1,16 @@
 #include "VWWLCD.h"
 #include <Arduino.h>
 
+const uint8_t screenHeight = 64;
+const uint8_t screenWidth = 128;
+    
+const uint8_t graphHeight = 50;
+const uint8_t graphWidth = 128;
+
 VWWLCD::VWWLCD(){
 
   /** Documentation from u8g->h
+  // we are using a 128x64 display
   class U8GLIB_ST7920_128X64 : public U8GLIB
   {
     public:
@@ -103,7 +110,7 @@ void VWWLCD::drawStringFromDigit(unsigned int digit){
     draw_state = 0;
   
   // rebuild the picture after some delay
-    delay(50);
+    delay(250);
   }
 
 
@@ -226,16 +233,83 @@ void VWWLCD::drawStringFromDigit(unsigned int digit){
 
 
 
+
+void VWWLCD::u8g_barGraphFromSales(char* title, uint8_t *subSales, uint8_t size) {
+    //u8g->drawStr( 0, 0, "Subscription");
+    //u8g->drawBox(5,10,20,10);
+    //u8g->drawBox(10+a,15,30,7);
+
+
+
+  const uint8_t dayWidth = 4;
+  const uint8_t dayXSpacing = 1;
+    //const uint8_t saleHeight = 2;
+
+
+  uint8_t max = 0;
+  uint8_t maxIndex = 0;
+  uint8_t min = 255;
+  uint8_t minIndex = 0;
+
+  for(uint8_t saleIndex = 0; saleIndex < size; saleIndex++){
+      // Temp: Populate subSales
+    //subSales[saleIndex] = random(0, 20);
+
+    if(subSales[saleIndex] > max){
+      max = subSales[saleIndex];
+      maxIndex = saleIndex;
+    }    
+
+    if(subSales[saleIndex] < min){
+      min = subSales[saleIndex];
+      minIndex = saleIndex;
+    }
+  }
+
+  const float saleHeight = graphHeight / (float)max;
+
+  char str[128] = "";
+  //sprintf(str, "max=%d min=%d sh=%d\r\n", max, min, (uint8_t)saleHeight);
+  sprintf(str, "%s: max=%d min=%d", title, max, min);
+
+
+  u8g->drawStr( 0, 0, str);
+
+    uint8_t graphYOffset = (screenHeight - graphHeight);
+    for(uint8_t day = 0; day < 30; day++){
+
+      uint8_t x = 0, y = 0, w = 0, h = 0;
+      x = day * dayWidth;
+      y = graphYOffset + graphHeight - (subSales[day] * saleHeight);
+      w = dayWidth;
+      h = graphYOffset + graphHeight - y;
+
+      u8g->drawFrame(x, y, w, h);
+
+    }
+  }
+
+
+
+
+// 128x64
 void VWWLCD::draw(void) {
   u8g_prepare();
-  switch(draw_state >> 3) {
+
+  // TODO: Parse incoming text and then pass to method
+  uint8_t subSales[30] = {1, 2, 20 ,50, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+  u8g_barGraphFromSales("Sales", subSales, 30);
+  //
+  /*switch(draw_state >> 3) {
     case 0: u8g_box_frame(draw_state&7); break;
     case 1: u8g_disc_circle(draw_state&7); break;
-    case 2: u8g_r_frame(draw_state&7); break;
+    case 2: u8g_test(draw_state&7);*/
+/*    case 2: u8g_r_frame(draw_state&7); break;
     case 3: u8g_string(draw_state&7); break;
-    case 4: u8g_line(draw_state&7); break;
-    case 5: u8g_ascii_1(); break;
+    case 4: u8g_line(draw_state&7); break;*/
+    /*case 5: u8g_ascii_1(); break;
     case 6: u8g_ascii_2(); break;
     case 7: u8g_extra_page(draw_state&7); break;
-  }
+  }*/
 }

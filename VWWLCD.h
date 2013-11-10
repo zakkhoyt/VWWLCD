@@ -17,7 +17,7 @@ private:
 	void u8g_ascii_1();
 	void u8g_ascii_2();
 	void u8g_extra_page(uint8_t a);
-
+	void u8g_barGraphFromSales(char* title, uint8_t *subSales, uint8_t size);
 
 public:
 	VWWLCD();
